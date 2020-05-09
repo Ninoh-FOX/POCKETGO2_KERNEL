@@ -696,6 +696,19 @@ static const struct linkdev_pdata_key_map gcw0_key_map[] = {
 		.code = KEY_BACKSPACE,
 		.event.code = BTN_TR,
 	},
+		/*POCKETGO2*/	
+	{
+		.code = KEY_RIGHTSHIFT,
+		.event.code = BTN_TL2,
+	},
+	{
+		.code = KEY_RIGHTALT,
+		.event.code = BTN_TR2,
+	},
+	{
+		.code = KEY_RIGHTCTRL,
+		.event.code = BTN_MODE,
+	},
 };
 
 static const struct linkdev_pdata_abs_map gcw0_abs_map[] = {
