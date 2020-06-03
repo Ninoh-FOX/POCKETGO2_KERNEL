@@ -509,19 +509,19 @@ static struct platform_device gcw0_i2c1_gpio_device = {
 
 #endif
 
-static struct i2c_gpio_platform_data gcw0_i2c3_gpio_data = {
-	.sda_pin		= JZ_GPIO_PORTD(5),
-	.scl_pin		= JZ_GPIO_PORTD(4),
-	.udelay			= 2, /* 250 kHz */
-};
+//static struct i2c_gpio_platform_data gcw0_i2c3_gpio_data = {
+//	.sda_pin		= JZ_GPIO_PORTD(5),
+//	.scl_pin		= JZ_GPIO_PORTD(4),
+//	.udelay			= 2, /* 250 kHz */
+//};
 
-static struct platform_device gcw0_i2c3_gpio_device = {
-	.name			= "i2c-gpio",
-	.id			= 3,
-	.dev			= {
-		.platform_data = &gcw0_i2c3_gpio_data,
-	},
-};
+//static struct platform_device gcw0_i2c3_gpio_device = {
+//	.name			= "i2c-gpio",
+//	.id			= 3,
+//	.dev			= {
+//		.platform_data = &gcw0_i2c3_gpio_data,
+//	},
+//};
 
 static struct i2c_gpio_platform_data gcw0_i2c4_gpio_data = {
 	.sda_pin		= JZ_GPIO_PORTD(6),
@@ -792,7 +792,7 @@ static struct platform_device *jz_platform_devices[] __initdata = {
 #if I2C1_USE_HW == 0
 	&gcw0_i2c1_gpio_device,
 #endif
-	&gcw0_i2c3_gpio_device,
+//	&gcw0_i2c3_gpio_device,
 	&gcw0_i2c4_gpio_device,
 	&jz4770_pwm_device,
 	&jz4770_adc_device,
