@@ -326,11 +326,11 @@ static struct rda5807_platform_data gcw0_rda5807_pdata = {
 
 static struct jz_battery_platform_data gcw0_battery_pdata = {
 	.gpio_charge = -1,
-	.gpio_charge_active_low = 0,
+	.gpio_charge_active_low = 1,
 	.info = {
 		.name = "battery",
 		.technology = POWER_SUPPLY_TECHNOLOGY_LIPO,
-		.voltage_max_design = 3900000,
+		.voltage_max_design = 4150000,
 		.voltage_min_design = 3330000,
 	},
 };
