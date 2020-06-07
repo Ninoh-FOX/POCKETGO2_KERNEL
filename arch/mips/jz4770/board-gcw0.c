@@ -38,10 +38,10 @@
 #include <asm/reboot.h>
 
 #include <linux/mmc/host.h>
-//#include <linux/act8600_power.h>
+#include <linux/act8600_power.h>
 #include <linux/platform_data/jz4770_fb.h>
 #include <linux/platform_data/linkdev.h>
-#include <linux/platform_data/mxc6225.h>
+//#include <linux/platform_data/mxc6225.h>
 #include <linux/platform_data/pwm-haptic.h>
 #include <linux/platform_data/usb-musb-jz4770.h>
 #include <linux/pinctrl/machine.h>
@@ -51,7 +51,7 @@
 #include <linux/regulator/machine.h>
 #include <linux/rfkill-regulator.h>
 #include <linux/usb/musb.h>
-#include <media/radio-rda5807.h>
+//#include <media/radio-rda5807.h>
 #include <sound/jz4770.h>
 #include <video/jzpanel.h>
 #include <video/panel-nt39016.h>
@@ -300,26 +300,26 @@ static struct jz_mmc_platform_data gcw_external_sd_data = {
 
 /* FM radio receiver */
 
-static struct rda5807_platform_data gcw0_rda5807_pdata = {
-	.input_flags		= RDA5807_INPUT_LNA_WC_25 | RDA5807_LNA_PORT_P,
-	.output_flags		= RDA5807_OUTPUT_AUDIO_ANALOG,
-};
+//static struct rda5807_platform_data gcw0_rda5807_pdata = {
+//	.input_flags		= RDA5807_INPUT_LNA_WC_25 | RDA5807_LNA_PORT_P,
+//	.output_flags		= RDA5807_OUTPUT_AUDIO_ANALOG,
+//};
 
 
 /* Power Management Unit */
 
-//static struct act8600_outputs_t act8600_outputs[] = {
+static struct act8600_outputs_t act8600_outputs[] = {
 //	{ 4, 0x57, true  }, /* USB OTG: 5.3V */
-//	{ 5, 0x31, true  }, /* AVD:     2.5V */
+	{ 5, 0x31, true  }, /* AVD:     2.5V */
 //	{ 6, 0x39, false }, /* LCD:     3.3V */
-//	{ 7, 0x39, true  }, /* generic: 3.3V */
-//	{ 8, 0x24, true  }, /* generic: 1.8V */
-//};
+	{ 7, 0x39, true  }, /* generic: 3.3V */
+	{ 8, 0x24, true  }, /* generic: 1.8V */
+};
 
-//static struct act8600_platform_pdata_t act8600_platform_pdata = {
-//        .outputs = act8600_outputs,
-//        .nr_outputs = ARRAY_SIZE(act8600_outputs),
-//};
+static struct act8600_platform_pdata_t act8600_platform_pdata = {
+        .outputs = act8600_outputs,
+        .nr_outputs = ARRAY_SIZE(act8600_outputs),
+};
 
 
 /* Battery */
@@ -378,7 +378,7 @@ static struct platform_device gcw0_usb_charger_device = {
 
 
 /* USB 1.1 Host (OHCI) */
-/*
+
 static struct regulator_consumer_supply gcw0_internal_usb_regulator_consumer =
 	REGULATOR_SUPPLY("vrfkill", "rfkill-regulator.0");
 
@@ -408,7 +408,7 @@ static struct platform_device gcw0_internal_usb_regulator_device = {
 		.platform_data = &gcw0_internal_usb_regulator_data,
 	}
 };
-*/
+
 
 /* USB OTG (musb) */
 
@@ -426,38 +426,40 @@ static struct jz_otg_board_data gcw0_otg_board_data = {
  * Select which I2C busses use a hardware adapter (i2c-jz4770) and which use
  * a software adapter (i2c-gpio).
  */
-#if defined(CONFIG_I2C_JZ4770)
-#define I2C0_USE_HW	1
-#define I2C1_USE_HW	1
-#else
-#define I2C0_USE_HW	0
-#define I2C1_USE_HW	0
-#endif
+//#if defined(CONFIG_I2C_JZ4770)
+//#define I2C0_USE_HW	1
+//#define I2C1_USE_HW	1
+//#else
+//#define I2C0_USE_HW	0
+//#define I2C1_USE_HW	0
+//#endif
 
 static struct i2c_board_info gcw0_i2c0_devs[] __initdata = {
-	{
-		.type		= "radio-rda5807",
-		.addr		= RDA5807_I2C_ADDR,
-		.platform_data	= &gcw0_rda5807_pdata,
-	},
+/* the RG and PG don't has chip radio, is on this bus */
+//	{
+//		.type		= "radio-rda5807",
+//		.addr		= RDA5807_I2C_ADDR,
+//		.platform_data	= &gcw0_rda5807_pdata,
+//	},
 };
 
 /* We don't have a use for the INT pin yet. */
-#define GPIO_MXC6225_INT	JZ_GPIO_PORTF(13)
+//#define GPIO_MXC6225_INT	JZ_GPIO_PORTF(13)
 static struct i2c_board_info gcw0_i2c1_devs[] __initdata = {
-	{
-		.type		= "mxc6225",
-		.addr		= MXC6225_I2C_ADDR,
-	},
+/* the RG and PG don't has chip MXC6225_INT, is on this bus */
+//	 {
+//		 .type		= "mxc6225",
+//		 .addr		= MXC6225_I2C_ADDR,
+//	 },
 };
 
-//static struct i2c_board_info gcw0_i2c3_devs[] __initdata = {
-//	{
-//		.type		= ACT8600_NAME,
-//		.addr		= ACT8600_I2C_ADDR,
-//		.platform_data	= &act8600_platform_pdata,
-//	},
-//};
+static struct i2c_board_info gcw0_i2c3_devs[] __initdata = {
+	 {
+		 .type		= ACT8600_NAME,
+		 .addr		= ACT8600_I2C_ADDR,
+		 .platform_data	= &act8600_platform_pdata,
+	 },
+};
 
 static struct i2c_board_info gcw0_i2c4_devs[] __initdata = {
 	/* the IT6610 is on this bus, but we don't have a driver for it */
@@ -465,16 +467,16 @@ static struct i2c_board_info gcw0_i2c4_devs[] __initdata = {
 
 /* I2C busses */
 
-static struct i2c_jz4770_platform_data gcw0_i2c0_platform_data __initdata = {
-	.use_dma		= false,
-};
-
-static struct i2c_jz4770_platform_data gcw0_i2c1_platform_data __initdata = {
-	.use_dma		= false,
-};
-
-#if I2C0_USE_HW == 9
-
+//static struct i2c_jz4770_platform_data gcw0_i2c0_platform_data __initdata = {
+//	.use_dma		= false,
+//};
+//
+//static struct i2c_jz4770_platform_data gcw0_i2c1_platform_data __initdata = {
+//	.use_dma		= false,
+//};
+//
+//#if I2C0_USE_HW == 9
+//
 static struct i2c_gpio_platform_data gcw0_i2c0_gpio_data = {
 	.sda_pin		= JZ_GPIO_PORTD(30),
 	.scl_pin		= JZ_GPIO_PORTD(31),
@@ -489,10 +491,10 @@ static struct platform_device gcw0_i2c0_gpio_device = {
 	},
 };
 
-#endif
-
-#if I2C1_USE_HW == 0
-
+//#endif
+//
+//#if I2C1_USE_HW == 0
+//
 static struct i2c_gpio_platform_data gcw0_i2c1_gpio_data = {
 	.sda_pin		= JZ_GPIO_PORTE(30),
 	.scl_pin		= JZ_GPIO_PORTE(31),
@@ -506,22 +508,22 @@ static struct platform_device gcw0_i2c1_gpio_device = {
 		.platform_data = &gcw0_i2c1_gpio_data,
 	},
 };
+//
+//#endif
 
-#endif
+static struct i2c_gpio_platform_data gcw0_i2c3_gpio_data = {
+	.sda_pin		= JZ_GPIO_PORTD(5),
+	.scl_pin		= JZ_GPIO_PORTD(4),
+	.udelay			= 2, /* 250 kHz */
+};
 
-//static struct i2c_gpio_platform_data gcw0_i2c3_gpio_data = {
-//	.sda_pin		= JZ_GPIO_PORTD(5),
-//	.scl_pin		= JZ_GPIO_PORTD(4),
-//	.udelay			= 2, /* 250 kHz */
-//};
-
-//static struct platform_device gcw0_i2c3_gpio_device = {
-//	.name			= "i2c-gpio",
-//	.id			= 3,
-//	.dev			= {
-//		.platform_data = &gcw0_i2c3_gpio_data,
-//	},
-//};
+static struct platform_device gcw0_i2c3_gpio_device = {
+	.name			= "i2c-gpio",
+	.id			= 3,
+	.dev			= {
+		.platform_data = &gcw0_i2c3_gpio_data,
+	},
+};
 
 static struct i2c_gpio_platform_data gcw0_i2c4_gpio_data = {
 	.sda_pin		= JZ_GPIO_PORTD(6),
@@ -576,7 +578,8 @@ struct jz_clk_board_data jz_clk_bdata = {
 	 * Pick 432 MHz as it is the least common multiple of 27 MHz (required
 	 * by TV encoder) and 48 MHz (required by USB host).
 	 */
-	.pll1_rate	=  432000000,
+	/* 518,4 Mhz is the next multiple of 27Mhz and 48Mhz*/
+	.pll1_rate	=  518400000,
 };
 
 /* Power LED */
@@ -772,7 +775,7 @@ static struct platform_device gcw0_haptic_device = {
 /* Device registration */
 
 static struct platform_device *jz_platform_devices[] __initdata = {
-	//&gcw0_internal_usb_regulator_device,
+	&gcw0_internal_usb_regulator_device,
 	&jz4770_usb_ohci_device,
 	&jz4770_usb_otg_xceiv_device,
 	&jz4770_usb_otg_device,
@@ -780,19 +783,19 @@ static struct platform_device *jz_platform_devices[] __initdata = {
 	&jz4770_i2s_device,
 	&jz4770_pcm_device,
 	&jz4770_icdc_device,
-#if I2C0_USE_HW == 1
-	&jz4770_i2c0_device,
-#endif
-#if I2C1_USE_HW == 1
-	&jz4770_i2c1_device,
-#endif
-#if I2C0_USE_HW == 9
+//#if I2C0_USE_HW == 1
+//	&jz4770_i2c0_device,
+//#endif
+//#if I2C1_USE_HW == 1
+//	&jz4770_i2c1_device,
+//#endif
+//#if I2C0_USE_HW == 9
 	&gcw0_i2c0_gpio_device,
-#endif
-#if I2C1_USE_HW == 0
+//#endif
+//#if I2C1_USE_HW == 0
 	&gcw0_i2c1_gpio_device,
-#endif
-//	&gcw0_i2c3_gpio_device,
+//#endif
+	&gcw0_i2c3_gpio_device,
 	&gcw0_i2c4_gpio_device,
 	&jz4770_pwm_device,
 	&jz4770_adc_device,
@@ -830,12 +833,12 @@ static int __init gcw0_init_platform_devices(void)
 
 static void __init board_i2c_init(void)
 {
-	jz4770_i2c0_device.dev.platform_data = &gcw0_i2c0_platform_data;
-	jz4770_i2c1_device.dev.platform_data = &gcw0_i2c1_platform_data;
+//	jz4770_i2c0_device.dev.platform_data = &gcw0_i2c0_platform_data;
+//	jz4770_i2c1_device.dev.platform_data = &gcw0_i2c1_platform_data;
 
 	i2c_register_board_info(0, gcw0_i2c0_devs, ARRAY_SIZE(gcw0_i2c0_devs));
 	i2c_register_board_info(1, gcw0_i2c1_devs, ARRAY_SIZE(gcw0_i2c1_devs));
-//	i2c_register_board_info(3, gcw0_i2c3_devs, ARRAY_SIZE(gcw0_i2c3_devs));
+	i2c_register_board_info(3, gcw0_i2c3_devs, ARRAY_SIZE(gcw0_i2c3_devs));
 	i2c_register_board_info(4, gcw0_i2c4_devs, ARRAY_SIZE(gcw0_i2c4_devs));
 }
 
@@ -851,18 +854,18 @@ static void __init board_gpio_setup(void)
 	jz_gpio_disable_pullup(GPIO_USB_CHARGER);
 
 	/* MXC6225 data sheet says INT should not be pulled up or down */
-	jz_gpio_disable_pullup(GPIO_MXC6225_INT);
+//	jz_gpio_disable_pullup(GPIO_MXC6225_INT);
 }
 
 static struct pinctrl_map pin_map[] __initdata = {
-#if I2C0_USE_HW == 1
-	PIN_MAP_MUX_GROUP("i2c-jz4770.0", PINCTRL_STATE_DEFAULT,
-			  "jz4770-pinctrl", NULL, "i2c0"),
-#endif
-#if I2C1_USE_HW == 1
-	PIN_MAP_MUX_GROUP("i2c-jz4770.1", PINCTRL_STATE_DEFAULT,
-			  "jz4770-pinctrl", NULL, "i2c1"),
-#endif
+//#if I2C0_USE_HW == 1
+//	PIN_MAP_MUX_GROUP("i2c-jz4770.0", PINCTRL_STATE_DEFAULT,
+//			  "jz4770-pinctrl", NULL, "i2c0"),
+//#endif
+//#if I2C1_USE_HW == 1
+//	PIN_MAP_MUX_GROUP("i2c-jz4770.1", PINCTRL_STATE_DEFAULT,
+//			  "jz4770-pinctrl", NULL, "i2c1"),
+//#endif
 	PIN_MAP_MUX_GROUP("jz-msc.0", PINCTRL_STATE_DEFAULT,
 			  "jz4770-pinctrl", "msc0_4bit", "msc0"),
 	PIN_MAP_MUX_GROUP("jz-msc.1", PINCTRL_STATE_DEFAULT,
