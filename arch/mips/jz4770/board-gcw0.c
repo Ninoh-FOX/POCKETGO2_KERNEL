@@ -770,7 +770,7 @@ static struct platform_device gcw0_haptic_device = {
 /* Device registration */
 
 static struct platform_device *jz_platform_devices[] __initdata = {
-	//&gcw0_internal_usb_regulator_device,
+//	&gcw0_internal_usb_regulator_device,
 	&jz4770_usb_ohci_device,
 	&jz4770_usb_otg_xceiv_device,
 	&jz4770_usb_otg_device,
@@ -881,7 +881,7 @@ static struct pinctrl_map pin_map[] __initdata = {
 
 static struct pwm_lookup pwm_lookup[] = {
 	PWM_LOOKUP("jz4770-pwm", 1, "pwm-backlight", NULL),
-//	PWM_LOOKUP("jz4770-pwm", 4, "pwm-haptic", NULL),
+	PWM_LOOKUP("jz4770-pwm", 4, "pwm-haptic", NULL),
 };
 
 static void __init board_init_pins(void)
