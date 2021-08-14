@@ -25,17 +25,12 @@
 #include <linux/acpi.h>
 #include <linux/slab.h>
 #include <linux/power_supply.h>
-#include <acpi/acpi_drivers.h>
-#include <acpi/acpi_bus.h>
 #include <acpi/video.h>
-
 #include <drm/drmP.h>
 #include <drm/drm_crtc_helper.h>
 #include "radeon.h"
 #include "radeon_acpi.h"
 #include "atom.h"
-
-#include <linux/vga_switcheroo.h>
 
 #define ACPI_AC_CLASS           "ac_adapter"
 
@@ -369,7 +364,7 @@ int radeon_atif_handler(struct radeon_device *rdev,
 		return NOTIFY_DONE;
 
 	/* Check pending SBIOS requests */
-	handle = DEVICE_ACPI_HANDLE(&rdev->pdev->dev);
+	handle = ACPI_HANDLE(&rdev->pdev->dev);
 	count = radeon_atif_get_sbios_requests(handle, &req);
 
 	if (count <= 0)
@@ -556,7 +551,7 @@ int radeon_acpi_pcie_notify_device_ready(struct radeon_device *rdev)
 	struct radeon_atcs *atcs = &rdev->atcs;
 
 	/* Get the device handle */
-	handle = DEVICE_ACPI_HANDLE(&rdev->pdev->dev);
+	handle = ACPI_HANDLE(&rdev->pdev->dev);
 	if (!handle)
 		return -EINVAL;
 
@@ -596,7 +591,7 @@ int radeon_acpi_pcie_performance_request(struct radeon_device *rdev,
 	u32 retry = 3;
 
 	/* Get the device handle */
-	handle = DEVICE_ACPI_HANDLE(&rdev->pdev->dev);
+	handle = ACPI_HANDLE(&rdev->pdev->dev);
 	if (!handle)
 		return -EINVAL;
 
@@ -699,7 +694,7 @@ int radeon_acpi_init(struct radeon_device *rdev)
 	int ret;
 
 	/* Get the device handle */
-	handle = DEVICE_ACPI_HANDLE(&rdev->pdev->dev);
+	handle = ACPI_HANDLE(&rdev->pdev->dev);
 
 	/* No need to proceed if we're sure that ATIF is not supported */
 	if (!ASIC_IS_AVIVO(rdev) || !rdev->bios || !handle)

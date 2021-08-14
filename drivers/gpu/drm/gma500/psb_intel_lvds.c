@@ -563,7 +563,7 @@ void psb_intel_lvds_destroy(struct drm_connector *connector)
 
 	if (lvds_priv->ddc_bus)
 		psb_intel_i2c_destroy(lvds_priv->ddc_bus);
-	drm_sysfs_connector_remove(connector);
+	drm_connector_unregister(connector);
 	drm_connector_cleanup(connector);
 	kfree(connector);
 }
@@ -614,7 +614,7 @@ int psb_intel_lvds_set_property(struct drm_connector *connector,
 						      &crtc->saved_mode,
 						      encoder->crtc->x,
 						      encoder->crtc->y,
-						      encoder->crtc->fb))
+						      encoder->crtc->primary->fb))
 				goto set_prop_error;
 		}
 	} else if (!strcmp(property->name, "backlight")) {
@@ -625,7 +625,7 @@ int psb_intel_lvds_set_property(struct drm_connector *connector,
 		else
                         gma_backlight_set(encoder->dev, value);
 	} else if (!strcmp(property->name, "DPMS")) {
-		struct drm_encoder_helper_funcs *hfuncs
+		const struct drm_encoder_helper_funcs *hfuncs
 						= encoder->helper_private;
 		hfuncs->dpms(encoder, value);
 	}
@@ -653,8 +653,6 @@ const struct drm_connector_helper_funcs
 
 const struct drm_connector_funcs psb_intel_lvds_connector_funcs = {
 	.dpms = drm_helper_connector_dpms,
-	.save = psb_intel_lvds_save,
-	.restore = psb_intel_lvds_restore,
 	.detect = psb_intel_lvds_detect,
 	.fill_modes = drm_helper_probe_single_connector_modes,
 	.set_property = psb_intel_lvds_set_property,
@@ -715,6 +713,9 @@ void psb_intel_lvds_init(struct drm_device *dev,
 	gma_encoder->dev_priv = lvds_priv;
 
 	connector = &gma_connector->base;
+	gma_connector->save = psb_intel_lvds_save;
+	gma_connector->restore = psb_intel_lvds_restore;
+
 	encoder = &gma_encoder->base;
 	drm_connector_init(dev, connector,
 			   &psb_intel_lvds_connector_funcs,
@@ -722,7 +723,7 @@ void psb_intel_lvds_init(struct drm_device *dev,
 
 	drm_encoder_init(dev, encoder,
 			 &psb_intel_lvds_enc_funcs,
-			 DRM_MODE_ENCODER_LVDS);
+			 DRM_MODE_ENCODER_LVDS, NULL);
 
 	gma_connector_attach_encoder(gma_connector, gma_encoder);
 	gma_encoder->type = INTEL_OUTPUT_LVDS;
@@ -777,6 +778,7 @@ void psb_intel_lvds_init(struct drm_device *dev,
 	 * Attempt to get the fixed panel mode from DDC.  Assume that the
 	 * preferred mode is the right one.
 	 */
+	mutex_lock(&dev->mode_config.mutex);
 	psb_intel_ddc_get_modes(connector, &lvds_priv->ddc_bus->adapter);
 	list_for_each_entry(scan, &connector->probed_modes, head) {
 		if (scan->type & DRM_MODE_TYPE_PREFERRED) {
@@ -827,10 +829,12 @@ void psb_intel_lvds_init(struct drm_device *dev,
 	 * actually having one.
 	 */
 out:
-	drm_sysfs_connector_add(connector);
+	mutex_unlock(&dev->mode_config.mutex);
+	drm_connector_register(connector);
 	return;
 
 failed_find:
+	mutex_unlock(&dev->mode_config.mutex);
 	if (lvds_priv->ddc_bus)
 		psb_intel_i2c_destroy(lvds_priv->ddc_bus);
 failed_ddc:
