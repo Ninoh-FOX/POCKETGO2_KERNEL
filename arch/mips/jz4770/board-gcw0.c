@@ -247,13 +247,13 @@ static struct gpio_keys_button gcw0_buttons[] = {
 	/* L2 button */ {
 		.gpio			= JZ_GPIO_PORTD(31),
 		.active_low		= 1,
-		.code			= KEY_RIGHTSHIFT,
+		.code			= KEY_PAGEUP,
 		.debounce_interval	= 10,
 	},
 	/* R2 button */ {
 		.gpio			= JZ_GPIO_PORTF(10),
 		.active_low		= 1,
-		.code			= KEY_RIGHTALT,
+		.code			= KEY_PAGEDOWN,
 		.debounce_interval	= 10,
 	},
 
