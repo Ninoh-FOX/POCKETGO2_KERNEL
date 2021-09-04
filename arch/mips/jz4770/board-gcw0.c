@@ -229,7 +229,7 @@ static struct gpio_keys_button gcw0_buttons[] = {
 	/* MENU button */ {
 		.gpio			= JZ_GPIO_PORTE(8),
 		.active_low		= 1,
-		.code			= KEY_RIGHTCTRL,
+		.code			= KEY_HOME,
 		.debounce_interval	= 10,
 	},
 	/* Vol+ button */ {
